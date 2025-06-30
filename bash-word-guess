@@ -1,0 +1,47 @@
+#!/bin/bash
+
+echo "Welcome to the word guessing game"
+
+
+file="oxford.txt"
+
+
+shuf "$file" -o "$file"
+word=$(head -n 1 $file)
+echo $word
+echo "Selecting a random word to be guessed..."
+echo "The word has ${#word} characters"
+
+echo ""
+echo "Please enter one letter at a time to guess the word"
+echo "Press enter with no letter to exit the game"
+echo ""
+count=0
+blank="_"
+hiddenword=
+for (( i=0; i<${#word}; i++ )); do
+	hiddenword+="$blank"
+done
+
+until [ $word == $hiddenword ]; do
+    echo $hiddenword 
+    echo "Valid characters include:"
+    echo "a b c d e f g h i j k l m n o p q r s t u v w x y z _ '"
+    read -p "Guess a letter: " userletter
+    if [[ -z "$userletter" ]]; then
+	    exit
+    fi
+
+    for (( i=0; i<${#word}; i++ )); do
+	    if [[ $userletter == "${word:$i:1}" ]]; then
+		    hiddenword="${hiddenword:0:$i}$userletter${hiddenword:$((i+1))}"
+            fi
+
+    done 
+    (( count+=1 ))
+done
+echo $word
+echo "Congrats! you guessed the word in "$count" guesses"
+
+
+
